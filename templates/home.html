@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processing</title>
+    <style>
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .image-container img {
+            max-width: 30%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>IMAGE TO SKETCH</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data" id="upload-form">
+        <input type="file" name="file" accept="image/jpeg">
+        <button type="submit">Upload</button>
+    </form>
+    <div class="image-container" id="image-container">
+        <img src="" alt="Original" id="original"><br>
+        <img src="" alt="Grayscale" id="grayscale"><br>
+        <img src="" alt="Inverted" id="inverted"><br>
+        <img src="" alt="Pencil Sketch" id="pencil-sketch"><br>
+    </div>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            if (!response.ok) {
+                console.error('Error uploading image');
+                return;
+            }
+            const data = await response.json();
+            document.getElementById('original').src = `data:image/jpeg;base64,${data.original}`;
+            document.getElementById('grayscale').src = `data:image/jpeg;base64,${data.grayscale}`;
+            document.getElementById('inverted').src = `data:image/jpeg;base64,${data.inverted}`;
+            document.getElementById('pencil-sketch').src = `data:image/jpeg;base64,${data.pencil_sketch}`;
+        });
+    </script>
+</body>
+</html>
